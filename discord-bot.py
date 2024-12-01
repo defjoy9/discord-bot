@@ -2,6 +2,7 @@
 import os
 import random
 import discord
+import yt_dlp as youtube_dl
 from dotenv import load_dotenv
 from discord.ext import commands
 
@@ -13,7 +14,6 @@ intents = discord.Intents.default()
 intents.members = True
 intents.message_content = True 
 bot = commands.Bot(command_prefix='!',intents=intents)
-
 
 @bot.event
 async def on_ready():
@@ -33,5 +33,22 @@ async def yuh(ctx):
     response = random.choice(choices)
     await ctx.send(response)
 
+
+@bot.command(name='join', help='Joins the voice channel you are in.')
+async def join(ctx):
+    if ctx.author.voice: 
+        channel = ctx.author.voice.channel
+        await channel.connect()
+        await ctx.send(f"Joined {channel.name}!")
+    else:
+        await ctx.send("You are not in a voice channel!")
+
+@bot.command(name='leave', help='Leaves the voice channel.')
+async def leave(ctx):
+    if ctx.voice_client: 
+        await ctx.voice_client.disconnect()
+        await ctx.send("Disconnected from the voice channel!")
+    else:
+        await ctx.send("I'm not in a voice channel!")
 
 bot.run(TOKEN)
