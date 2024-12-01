@@ -2,7 +2,7 @@
 import os
 import random
 import discord
-import yt_dlp as youtube_dl
+import yt_dlp
 from dotenv import load_dotenv
 from discord.ext import commands
 
@@ -51,4 +51,44 @@ async def leave(ctx):
     else:
         await ctx.send("I'm not in a voice channel!")
 
+        
+# plays youtube
+@bot.command(name='play', help='Plays audio from a YouTube URL.')
+async def play(ctx, url: str):
+    if not ctx.voice_client: 
+        if ctx.author.voice:
+            channel = ctx.author.voice.channel
+            await channel.connect()
+        else:
+            await ctx.send("You are not in a voice channel!")
+            return
+
+    ydl_opts = {
+        'format': 'bestaudio/best',
+        'postprocessors': [{
+            'key': 'FFmpegExtractAudio',
+            'preferredcodec': 'mp3',
+            'preferredquality': '192',
+        }],
+    }
+
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        try:
+            info = ydl.extract_info(url, download=False)
+            url2 = info['url']
+        except Exception as e:
+            await ctx.send(f"An error occurred: {e}")
+            return
+
+    ctx.voice_client.stop()
+    ctx.voice_client.play(discord.FFmpegPCMAudio(url2), after=lambda e: print(f"Finished playing: {e}"))
+    await ctx.send(f"Now playing: {info.get('title', 'Unknown Title')}")
+
+@bot.command(name='stop', help='Stops the current audio.')
+async def stop(ctx):
+    if ctx.voice_client and ctx.voice_client.is_playing():
+        ctx.voice_client.stop()
+        await ctx.send("Stopped playing!")
+    else:
+        await ctx.send("I'm not playing anything!")
 bot.run(TOKEN)
