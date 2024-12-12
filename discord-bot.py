@@ -6,6 +6,47 @@ import yt_dlp
 from dotenv import load_dotenv
 from discord.ext import commands
 
+def random_weaponoragent(type):
+    #guns
+    sidearms = ['Classic','Shorty','Frenzy','Ghost','Sherif']
+    primary = ['Bucky','Judge','Bulldog','Guardian','Phantom','Vandal','Marshal','Outlaw','Operator','Ares','Odin']
+    #agents
+    role = "Sentinel", "Initiator","Dualist","Controller"
+    agents = "Brimstone", "Viper","Omen","Killjoy","Cypher","Sova","Sage","Phoenix","Jett","Reyna","Raze","Breach","Skye","Yoru","Astra","KAY/O","Chamber","Neon","Fade","Harbor","Gekko","Deadlock","Iso","Clove","Vyse"
+    sentinels = "Killjoy", "Cypher", "Sage", "Chamber","Deadlock","Vyse"
+    initiators = "Sova","Breach","Skye","KAY/O","Fade","Gekko"
+    dualists = "Phoenix","Jett","Reyna","Raze","Yoru","Neon","Iso"
+    controllers = "Brimstone", "Viper", "Omen", "Astra","Harbor", "Clove"
+
+
+    match type:
+        case "sidearms":
+            random_index = random.randint(0,4)
+            return sidearms[random_index]
+        
+        case "primary":
+            random_index = random.randint(0,9)
+            return primary[random_index]
+        case "agents":
+            random_index = random.randint(0,24)
+            return agents[random_index]
+        case "role":
+            random_index = random.randint(0,3)
+            return role[random_index]
+        case "sentinels":
+            random_index = random.randint(0,5)
+            return sentinels[random_index]
+        case "initiators":
+            random_index = random.randint(0,5)
+            return initiators[random_index]
+        case "dualists":
+            random_index = random.randint(0,6)
+            return dualists[random_index]
+        case "controllers":
+            random_index = random.randint(0,5)
+            return controllers[random_index]
+        
+
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
@@ -33,6 +74,47 @@ async def yuh(ctx):
     response = random.choice(choices)
     await ctx.send(response)
 
+#valorant theme
+@bot.command(name='sidearms', help='Randomly chooses a sidearm gun from valorant')
+async def sidearms(ctx):
+    response = random_weaponoragent("sidearms")
+    await ctx.send(response)
+
+@bot.command(name='primary', help='Randomly chooses a primary gun from valorant')
+async def primary(ctx):
+    response = random_weaponoragent("primary")
+    await ctx.send(response)
+
+@bot.command(name='role', help='Randomly chooses an agent role from valorant')
+async def sidearms(ctx):
+    response = random_weaponoragent("role")
+    await ctx.send(response)
+
+@bot.command(name='agents', help='Randomly chooses an agent from valorant')
+async def sidearms(ctx):
+    response = random_weaponoragent("agents")
+    await ctx.send(response)
+
+@bot.command(name='sentinel', help='Randomly chooses a sentinel agent from valorant')
+async def sentinels(ctx):
+    response = random_weaponoragent("sentinels")
+    await ctx.send(response)
+
+@bot.command(name='initiator', help='Randomly chooses a initiator agent from valorant')
+async def sentinels(ctx):
+    response = random_weaponoragent("initiators")
+    await ctx.send(response)
+
+@bot.command(name='dualist', help='Randomly chooses a dualist agent from valorant')
+async def sentinels(ctx):
+    response = random_weaponoragent("dualists")
+    await ctx.send(response)
+
+@bot.command(name='controller', help='Randomly chooses a controller agent from valorant')
+async def sentinels(ctx):
+    response = random_weaponoragent("sentinels")
+    await ctx.send(response)
+# ----
 
 @bot.command(name='join', help='Joins the voice channel you are in.')
 async def join(ctx):
