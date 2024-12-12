@@ -137,7 +137,7 @@ async def leave(ctx):
 # plays youtube
 @bot.command(name='play', help='Plays audio from a YouTube URL.')
 async def play(ctx, url: str):
-    if not ctx.voice_client: 
+    if not ctx.voice_client:
         if ctx.author.voice:
             channel = ctx.author.voice.channel
             await channel.connect()
@@ -158,13 +158,24 @@ async def play(ctx, url: str):
         try:
             info = ydl.extract_info(url, download=False)
             url2 = info['url']
+            title = info.get('title', 'Unknown Title')
         except Exception as e:
-            await ctx.send(f"An error occurred: {e}")
+            await ctx.send(f"An error occurred while processing the URL: {e}")
             return
 
-    ctx.voice_client.stop()
-    ctx.voice_client.play(discord.FFmpegPCMAudio(url2), after=lambda e: print(f"Finished playing: {e}"))
-    await ctx.send(f"Now playing: {info.get('title', 'Unknown Title')}")
+    # Set FFmpeg options for streaming
+    ffmpeg_options = {
+        'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
+        'options': '-vn'
+    }
+
+    # Play the audio
+    ctx.voice_client.play(
+        discord.FFmpegPCMAudio(url2, **ffmpeg_options),
+        after=lambda e: print(f"Finished playing: {e}")
+    )
+    await ctx.send(f"Now playing: {title}")
+
 
 @bot.command(name='stop', help='Stops the current audio.')
 async def stop(ctx):
