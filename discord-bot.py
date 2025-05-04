@@ -1,4 +1,3 @@
-# bot.py
 import os
 import random
 import discord
@@ -45,7 +44,6 @@ def random_weaponoragent(type):
         case "controllers":
             random_index = random.randint(0,5)
             return controllers[random_index]
-        
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
