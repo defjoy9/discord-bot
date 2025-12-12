@@ -1,68 +1,164 @@
-# 🎮 Valorant-Themed Discord Bot
+# Valorant-Themed Discord Bot
 
-A fun and interactive Discord bot made with Python and `discord-bot.py` that adds Valorant-themed commands, voice channel interaction, and YouTube music playback to your server.
-
----
-
-## ✨ Features
-
-* 🎲 **Random Valorant Picks**: Choose a random weapon, agent, or role from Valorant.
-* 🗨️ **Fun Chat Command**: Responds with random facts about Ariana Grande.
-* 🔊 **Voice Channel Support**: Join and leave voice channels on command.
-* 🎵 **Music Playback**: Play YouTube audio directly into a voice channel using `yt_dlp` and FFmpeg.
+A Python Discord bot I built for fun and to get more comfortable with **async programming, Discord’s API**, and **basic voice/audio streaming** using FFmpeg + yt_dlp.
+It includes Valorant-themed randomizers, chat commands, and full voice channel music playback.
 
 ---
 
-## 🛠️ Setup Instructions
+# 1. Why I Built This
+
+I wanted a small project that let me experiment with:
+
+* Discord’s command/event system
+* Asynchronous tasks in Python
+* Working with voice channels (which is trickier than text commands)
+* Integrating YouTube audio streaming via FFmpeg
+* Token management and environment configuration
+
+This bot started as a fun Valorant randomizer, then grew into a full audio-enabled Discord bot.
+
+---
+
+# 2. Features
+
+### 🎲 Valorant Randomizers
+
+Random selection for:
+
+* weapons
+* primary/secondary categories
+* agent roles
+* individual agents
+
+Useful for challenge rounds or just messing around in voice chat.
+
+### 🗨️ Fun Chat Commands
+
+A lightweight example of responding to text commands (Ariana Grande trivia, etc.).
+
+### 🔊 Voice Channel Interaction
+
+The bot can:
+
+* join your current voice channel
+* leave on command
+* report errors if you're not in a channel
+
+### 🎵 Music Playback (YouTube)
+
+Using `yt_dlp` + FFmpeg, the bot can:
+
+* stream YouTube audio directly into Discord
+* stop playback on command
+* handle invalid URLs gracefully
+
+---
+
+# 3. How the Bot Works (Architecture)
+
+```
+Discord API Events
+       │
+       ▼
+discord.py Command Handler
+       │
+       ├── Text Commands (randomizers, fun replies)
+       │
+       └── Voice Commands
+              │
+              ├─ Join / Leave VC
+              └─ Play Audio (yt_dlp → FFmpeg → Discord VoiceClient)
+```
+
+Key points:
+
+* Everything runs asynchronously (`async def`, `await`).
+* Audio streaming uses subprocess piping from FFmpeg into Discord’s voice protocol.
+* Sensitive credentials stay in `.env` (not committed).
+
+---
+
+# 4. Setup Instructions
 
 ### 1. Clone the Repository
 
-    git clone https://github.com/defjoy9/discord-bot.git
-    cd discord-bot
+```bash
+git clone https://github.com/defjoy9/discord-bot.git
+cd discord-bot
+```
 
 ### 2. Install Dependencies
 
-    pip install -r requirements.txt
-
-Make sure you have Python 3.8+ and pip installed.
-
-### 3. FFmpeg Requirement
-
-Make sure `ffmpeg` is installed and added to your system PATH.
-
-* [FFmpeg Downloads](https://ffmpeg.org/download.html)
-
-### 4. Configure Environment Variables
-
-Create a `.env` file in the root directory:
-
+```bash
+pip install -r requirements.txt
 ```
-DISCORD_TOKEN=your-bot-token-here
+
+You’ll need Python **3.8+**.
+
+### 3. Install FFmpeg
+
+FFmpeg must be installed and available on your PATH.
+
+Download: [https://ffmpeg.org/download.html](https://ffmpeg.org/download.html)
+
+### 4. Create `.env`
+
+```env
+DISCORD_TOKEN=your-bot-token
 DISCORD_GUILD=your-server-name
 ```
 
----
-
-## 🧠 Available Commands
-
-| Command       | Description                                   |
-| ------------- | --------------------------------------------- |
-| `!yuh`        | Responds with Ariana Grande trivia.           |
-| `!sidearms`   | Picks a random Valorant sidearm.              |
-| `!primary`    | Picks a random primary weapon.                |
-| `!role`       | Picks a random Valorant agent role.           |
-| `!agents`     | Picks a random Valorant agent.                |
-| `!sentinel`   | Picks a random Sentinel agent.                |
-| `!initiator`  | Picks a random Initiator agent.               |
-| `!dualist`    | Picks a random Dualist agent.                 |
-| `!controller` | Picks a random Controller agent.              |
-| `!join`       | Makes the bot join your voice channel.        |
-| `!leave`      | Makes the bot leave the voice channel.        |
-| `!play <url>` | Plays audio from a YouTube URL in voice chat. |
-| `!stop`       | Stops the currently playing audio.            |
+The bot token must stay private — `.env` is ignored by Git.
 
 ---
 
-## 📄 License
+# 5. Available Commands
 
-This project is for educational and entertainment purposes. No official affiliation with Riot Games or Discord.
+| Command       | Description                         |
+| ------------- | ----------------------------------- |
+| `!yuh`        | Fun Ariana Grande fact              |
+| `!sidearms`   | Random Valorant sidearm             |
+| `!primary`    | Random primary weapon               |
+| `!agents`     | Random agent                        |
+| `!role`       | Random role                         |
+| `!sentinel`   | Random sentinel                     |
+| `!initiator`  | Random initiator                    |
+| `!dualist`    | Random dualist                      |
+| `!controller` | Random controller                   |
+| `!join`       | Bot joins your voice channel        |
+| `!leave`      | Bot leaves the channel              |
+| `!play <url>` | Plays YouTube audio in your channel |
+| `!stop`       | Stops playing audio                 |
+
+---
+
+# 6. Error Handling
+
+The bot handles common failure cases:
+
+* Trying to join a channel when the user isn’t in one
+* Invalid YouTube URLs
+* Missing FFmpeg installation
+* Permission errors inside Discord
+* Attempting to stop audio when nothing is playing
+
+These failure points helped me practice defensive coding around async functions and exceptions.
+
+---
+
+# 7. Future Improvements
+
+I may expand this project with:
+
+* Slash commands (`/play`, `/agent`, `/pick`)
+* Queue system for multiple songs
+* Auto-disconnect when idle
+* Rich embeds for Valorant data
+* Dockerized deployment
+* Caching YouTube metadata for faster responses
+
+---
+
+# 8. License
+
+This project is for educational and entertainment use — not affiliated with Riot Games or Discord.
